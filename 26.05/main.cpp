@@ -42,6 +42,10 @@ namespace sc{
                 
             };
 
+            size_type capacity(void) const{
+                return m_capacity;
+            }
+
             std::string to_string(void) const{
                 std::ostringstream oss;
                 oss << "[ ";
@@ -68,9 +72,22 @@ namespace sc{
 
 int main(){
     sc::array<int> A(10);
-    A.push_back(2);
+
+    try{
+        for( int i = {1}; i <= A.capacity()+1; ++i) {
+            A.push_back(i);
+
+        }
+    }
+    catch(const std::length_error& e){
+        std::cout << ">>> Capturei o erro!!! \n";
+        std::cout << "Msg = " << e.what() << std::endl;
+    }
+
 
     std::cout << A.to_string();
+
+    std::cout << std::endl;
 
     return 0;
 }
