@@ -1,6 +1,6 @@
 #include <iostream>
 #include <array>
-
+#include <sstream>
 
 namespace sc{
     // Modelo de template
@@ -38,14 +38,22 @@ namespace sc{
                 // Verificar se há espaço
                 if(full())
                     throw std::length_error{"Array tá cheio!!!"};
-                m_data[m_end++];
+                m_data[m_end++] = value;
                 
             };
 
             std::string to_string(void) const{
                 std::ostringstream oss;
                 oss << "[ ";
+                for(size_type i{0}; i < m_end; ++i)
+                    oss << m_data[i] << " ";
+                oss << "| ";
+                for(size_type i{m_end}; i < m_capacity; ++i)
+                    oss << m_data[i] << " ";
+                oss << "]";
+                return oss.str();
             }
+
         };
         
         // array::array(/* args */)
@@ -60,7 +68,9 @@ namespace sc{
 
 int main(){
     sc::array<int> A(10);
-    A.push_back();
+    A.push_back(2);
+
+    std::cout << A.to_string();
 
     return 0;
 }
