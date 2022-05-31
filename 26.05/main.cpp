@@ -26,8 +26,21 @@ namespace sc{
                     m_data(new T[m_capacity])
             {/*empty*/}
 
+            array(size_type sz, const value_type& value)
+                :   m_capacity(sz),
+                    m_end(m_capacity),
+                    m_data(new T[m_capacity])
+            { std::fill(m_data, m_data+m_capacity, value); }
+
+            array(const array& other)
+                : m_capacity{other.m_capacity}
+                , m_end{other.m_end}
+                , m_data{new value_type[m_capacity]}
+            { std::copy(other.m_data, other.m_data+m_end, m_data); }
+
             ~array(){
                 if(m_data != nullptr) delete [] m_data;
+                // m_data = ttr
             }
 
             bool full(void) const{
@@ -58,7 +71,42 @@ namespace sc{
                 return oss.str();
             }
 
-        };
+            size_type insert(size_type pos, const value_type& value){
+                if(full()){
+                    throw std::length_error{"Array is full!!!"};
+                }
+
+                if(pos >= m_capacity){
+                    throw std::out_of_range{"Location informed is beyond the array's limit."};
+                }
+
+                if(pos >= m_end){
+                    for(/*empty*/; m_end < pos; ++m_end){
+                        m_data[m_end] = value_type{};
+                    }
+                }
+                else{
+                    std::copy_backward(m_data+pos, m_data+m_end, m_data+m_end+1);
+                }
+                m_data[pos] = value;
+                m_end++;
+
+                return pos;
+            }
+
+            bool empty(void) const{
+                return m_end == 0;
+            }
+
+            size_type remove(size_type pos){
+                if(pos >= m_end) return pos;
+                else{
+                    std::copy(m_data+pos+1, m_data+m_end, m_data+pos);
+                    m_end--;
+                    return pos;
+                }
+            }
+    };
         
         // array::array(/* args */)
         // {
@@ -72,6 +120,7 @@ namespace sc{
 
 int main(){
     sc::array<int> A(10);
+    sc::array<int> B(10);
 
     try{
         for( int i = {1}; i <= A.capacity()+1; ++i) {
@@ -84,9 +133,24 @@ int main(){
         std::cout << "Msg = " << e.what() << std::endl;
     }
 
+    B.push_back(3);
+    B.push_back(4);
+    B.push_back(5);
 
-    std::cout << A.to_string();
+    std::cout << B.to_string();
+    std::cout << std::endl;
+    B.insert(1, 8);
 
+    // std::cout << A.to_string();
+    std::cout << B.to_string();
+    std::cout << std::endl;
+    B.insert(6, 10);
+
+    std::cout << B.to_string();
+    std::cout << std::endl;
+
+    B.remove(2);
+    std::cout << B.to_string();
     std::cout << std::endl;
 
     return 0;
