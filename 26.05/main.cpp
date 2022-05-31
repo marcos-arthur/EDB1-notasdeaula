@@ -101,6 +101,8 @@ namespace sc{
             size_type remove(size_type pos){
                 if(pos >= m_end) return pos;
                 else{
+                    m_data[pos].~T();
+
                     std::copy(m_data+pos+1, m_data+m_end, m_data+pos);
                     m_end--;
                     return pos;
