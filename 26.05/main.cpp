@@ -43,6 +43,29 @@ namespace sc{
                 // m_data = ttr
             }
 
+            // A = (B = C)
+            array& operator=(const array& rhs){
+                if(this != &rhs) {
+                    m_capacity = rhs.m_capacity;
+                    m_end = rhs.m_end;
+                    /// Cópia rasa
+                    // m_data = rhs.m_data;
+
+                    /// Cópia profunda
+                    m_data = new value_type[m_capacity];
+                    std::copy(rhs.m_data, rhs.m_data+m_end, this->m_data);
+                }
+
+                return *this;
+            }
+
+            array(const std::initializer_list<value_type>& il)
+            : m_capacity{il.size}
+            , m_end{il.size}
+            , m_data{new value_type[m_capacity]}{
+                std::copy(il.begin(), il.end(), this->m_data);
+            }
+
             bool full(void) const{
                 return m_end == m_capacity;
             }
